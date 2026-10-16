@@ -16,6 +16,7 @@ BEESDR enhances the rig you already own — it does not replace it.
 |---|---|---|
 | 🇫🇷 Français | [Manuel d'utilisation](BEESDR-Manuel-Utilisateur-FR.md) | [BEESDR-Manuel-Utilisateur-FR.pdf](pdf/BEESDR-Manuel-Utilisateur-FR.pdf) |
 | 🇬🇧 English | [User Manual](BEESDR-User-Manual-EN.md) | [BEESDR-User-Manual-EN.pdf](pdf/BEESDR-User-Manual-EN.pdf) |
+| 🇫🇷 / 🇬🇧 Flyer | | [BEESDR-flyer.pdf](pdf/BEESDR-flyer.pdf) (A4, recto FR / verso EN) |
 
 ---
 
