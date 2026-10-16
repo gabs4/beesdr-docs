@@ -1,4 +1,4 @@
-# WMSDR — User Manual
+# BEESDR — User Manual
 
 **A panadapter, DSP receiver and control head for small QRP transceivers that provide I/Q and CAT.**
 
@@ -9,7 +9,7 @@ Author: Gabi Mihaila, YO4WM
 
 ## Table of contents
 
-1. [What WMSDR is](#1-what-wmsdr-is)
+1. [What BEESDR is](#1-what-beesdr-is)
 2. [Hardware](#2-hardware)
 3. [Software architecture](#3-software-architecture)
 4. [Connecting a transceiver — the uSDX triband example](#4-connecting-a-transceiver--the-usdx-triband-example)
@@ -22,14 +22,14 @@ Author: Gabi Mihaila, YO4WM
 
 ---
 
-## 1. What WMSDR is
+## 1. What BEESDR is
 
-![WMSDR front panel: main screen on 20 m with the RSS news ticker, the eight-knob encoder unit below, the ATU display (separate unit) on the right](images/wmsdr-front-rss.jpg)
+![BEESDR front panel: main screen on 20 m with the RSS news ticker, the eight-knob encoder unit below, the ATU display (separate unit) on the right](images/beesdr-front-rss.jpg)
 
-*Figure 1 — WMSDR front panel: main screen on 20 m with the RSS news ticker, the eight-knob encoder unit below, the ATU display (separate unit) on the right.*
+*Figure 1 — BEESDR front panel: main screen on 20 m with the RSS news ticker, the eight-knob encoder unit below, the ATU display (separate unit) on the right.*
 
-WMSDR is a self-contained receive-side DSP and display unit. It does not generate RF and it
-does not transmit. It takes the **baseband I/Q pair** from a quadrature-sampling detector
+BEESDR is a self-contained DSP and display unit. It never generates RF itself: on transmit it
+keys the rig and feeds it processed voice audio, or keys it in CW (§8.11). It takes the **baseband I/Q pair** from a quadrature-sampling detector
 (a Tayloe mixer, in practice) and a **CAT serial link** from the same radio, and turns those
 two into everything a small QRP rig usually cannot afford to have:
 
@@ -46,7 +46,7 @@ two into everything a small QRP rig usually cannot afford to have:
   to it over CAT.
 
 The design intent is explicit: **enhance a QRP transceiver you already own**, rather than
-replace it. The rig keeps the RF, the filtering, the PA and the transmit chain. WMSDR
+replace it. The rig keeps the RF, the filtering, the PA and the transmit chain. BEESDR
 adds the eyes and the ears.
 
 The reference rig for development is the **uSDX triband** by Barb, WB2CBA
@@ -56,13 +56,13 @@ both an I/Q pair and a TS-480-compatible CAT port. Anything that does the same w
 > **Requirements on the host rig**
 > 1. A baseband **I/Q output** — two audio-level channels, in quadrature, at line level.
 > 2. A **CAT serial port** speaking the Kenwood TS-480 dialect (at minimum `FA`, `MD`).
-> 3. A common ground and, ideally, a supply rail WMSDR can share.
+> 3. A common ground and, ideally, a supply rail BEESDR can share.
 
 ---
 
 ## 2. Hardware
 
-![The enclosure front: 800×480 touch panel, eight-encoder unit, tuning knob, ATU display (separate unit)](images/wmsdr-front-atu_01.jpg)
+![The enclosure front: 800×480 touch panel, eight-encoder unit, tuning knob, ATU display (separate unit)](images/beesdr-front-atu_01.jpg)
 
 *Figure 2 — The enclosure front: 800×480 touch panel, eight-encoder unit, tuning knob, ATU display (separate unit).*
 
@@ -82,7 +82,7 @@ both an I/Q pair and a TS-480-compatible CAT port. Anything that does the same w
 
 The I/Q pair enters the WM8731 line inputs as a stereo signal — I on one channel, Q on
 the other. Sideband selection therefore depends on the **sense** of that pair, which
-WMSDR detects automatically (see the STATUS tab, §8.13) rather than requiring you to
+BEESDR detects automatically (see the STATUS tab, §8.13) rather than requiring you to
 get the wiring right first time.
 
 Demodulated audio leaves through the WM8731 DAC.
@@ -122,11 +122,11 @@ detection; FM uses a discriminator with a noise-derived squelch.
 
 ## 4. Connecting a transceiver — the uSDX triband example
 
-The uSDX triband (WB2CBA) is the rig WMSDR has been developed and measured against.
+The uSDX triband (WB2CBA) is the rig BEESDR has been developed and measured against.
 
 **Wiring**
 
-| uSDX | WMSDR | Note |
+| uSDX | BEESDR | Note |
 |---|---|---|
 | I output | WM8731 LINE IN, left | via the interface board |
 | Q output | WM8731 LINE IN, right | via the interface board |
@@ -136,12 +136,12 @@ The uSDX triband (WB2CBA) is the rig WMSDR has been developed and measured again
 
 **First power-up**
 
-1. Set the uSDX CAT baud rate and WMSDR's `CAT BAUD` (DSP tab) to the same value.
+1. Set the uSDX CAT baud rate and BEESDR's `CAT BAUD` (DSP tab) to the same value.
    115200 is the default here.
 2. Open the menu → **STATUS**. `MODE / BAND` and `FREQUENCY` should be following the rig
    within a fraction of a second. If they do not move, the CAT link is not up.
 3. On the same tab, `I/Q SENSE` will read **STRAIGHT (I,Q)** or **SWAPPED (Q,I)**. Either
-   is fine — WMSDR compensates. What matters is that it is not stuck on `checking...`.
+   is fine — BEESDR compensates. What matters is that it is not stuck on `checking...`.
 4. Verify the orientation on the air: tune the rig **down** in frequency and watch a
    carrier on the spectrum. It should move **right**. If it moves left, press
    **RE-CHECK I/Q** on the STATUS tab.
@@ -152,7 +152,7 @@ The uSDX triband (WB2CBA) is the rig WMSDR has been developed and measured again
 While its own encoder is turning, the uSDX largely stops answering CAT — measured at
 around 20 replies per second when idle, dropping to 1–2 per second while tuning. The
 frequency readout therefore lags the knob on the rig, and then catches up when you stop.
-This is the rig, not the display path. WMSDR deliberately does **not** poll harder to
+This is the rig, not the display path. BEESDR deliberately does **not** poll harder to
 compensate, because asking more often makes it worse: the uSDX parses CAT in the same
 loop that reads its encoder.
 
@@ -160,13 +160,13 @@ loop that reads its encoder.
 
 ## 5. CAT interface
 
-WMSDR speaks the **Kenwood TS-480** CAT dialect over UART1, 8-N-1, at 9600, 38400 or
+BEESDR speaks the **Kenwood TS-480** CAT dialect over UART1, 8-N-1, at 9600, 38400 or
 115200 baud (selected on the DSP tab, applied live).
 
 It is a **client**: it polls the rig and follows it. It sends only one command that
 changes the rig's state — the frequency set behind tap-to-tune.
 
-### Commands WMSDR sends
+### Commands BEESDR sends
 
 | Command | Rate | Purpose |
 |---|---|---|
@@ -176,7 +176,7 @@ changes the rig's state — the frequency set behind tap-to-tune.
 | `MD;` | 1 Hz | Get the operating mode |
 | `FA` + 11 digits + `;` | on demand | **Set** frequency — tap-to-tune only |
 
-### Replies WMSDR understands
+### Replies BEESDR understands
 
 | Reply | Format | Effect |
 |---|---|---|
@@ -187,7 +187,7 @@ changes the rig's state — the frequency set behind tap-to-tune.
 
 **Mode codes (`MD`)**
 
-| Code | Mode | WMSDR label |
+| Code | Mode | BEESDR label |
 |---|---|---|
 | 0 | — | NONE |
 | 1 | LSB | LSB |
@@ -203,7 +203,7 @@ changes the rig's state — the frequency set behind tap-to-tune.
 ### Implementation notes worth knowing
 
 - **Frames are reassembled.** A reply routinely arrives split across two UART reads, and
-  several replies routinely arrive in one. WMSDR accumulates bytes and emits every
+  several replies routinely arrive in one. BEESDR accumulates bytes and emits every
   complete `;`-terminated frame, keeping any partial tail for the next read. Nothing is
   flushed on a split.
 - **Digit fields are validated.** A frame with the right length and prefix but junk in the
@@ -213,10 +213,10 @@ changes the rig's state — the frequency set behind tap-to-tune.
   VFO B. On the uSDX, `FA` addresses the *active* VFO and an `FB` set is silently ignored.
   A build flag (`CAT_SET_FREQ_PER_VFO`) exists for a genuine TS-480, which does implement
   `FB` as a separate VFO.
-- **Poll backoff.** After 5 seconds of complete silence, WMSDR drops to one probe per
+- **Poll backoff.** After 5 seconds of complete silence, BEESDR drops to one probe per
   second. It deliberately does *not* use the 1-second icon timeout for this, because a
   connected rig goes quiet that long by itself while being tuned.
-- **What WMSDR does not do:** it never keys the rig, never sets mode, never sets VFO, and
+- **What BEESDR does not do:** it never keys the rig, never sets mode, never sets VFO, and
   never writes memories.
 
 ---
@@ -723,14 +723,14 @@ The self-test runs slower than real time; that does not change the result.
 
 ---
 
-### 7.4 Companion web pages (wmsdr-dx.local)
+### 7.4 Companion web pages (beesdr-dx.local)
 
 The radio has no storage and no keyboard. The companion XIAO — the board that already brings UTC
 and DX spots over ESP-NOW — receives the decoded WeFax charts and FT8 decodes, keeps the latest
 ones in its memory and serves them to any browser on your Wi-Fi; it also carries CW typed in the
 browser to the radio. Saving happens in the browser, on your phone or PC.
 
-Open **`http://wmsdr-dx.local/`**:
+Open **`http://beesdr-dx.local/`**:
 
 - **Home** is a dashboard with live tiles — UTC, FT8 (decodes in the last slot), Pictures, DX
   cluster, and the companion's Wi-Fi signal and uptime. Tap a tile to open its page.
@@ -740,7 +740,7 @@ Open **`http://wmsdr-dx.local/`**:
   that browser.
 - **Settings** holds the Wi-Fi, **CALLSIGN** and DX-cluster fields. Saving reboots the
   companion; leaving the password field empty keeps the stored one. In first-time setup (the
-  `WMSDR-DX-Config` access point, 192.168.4.1) the settings form opens directly.
+  `BEESDR-DX-Config` access point, 192.168.4.1) the settings form opens directly.
 
 The live pages show **LIVE** while connected and reconnect by themselves.
 
@@ -820,12 +820,78 @@ With live keying off, type a whole line and press **Enter** or **Send**.
 - **FT8 shows `N decoded, M received` in red often:** the ESP-NOW link is losing frames — move the
   companion closer or improve its antenna.
 - **The companion cannot join the Wi-Fi at all** — it sees networks in a scan but connects to
-  none, not even its own `WMSDR-DX-Config` access point: check its **antenna** first (the small
+  none, not even its own `BEESDR-DX-Config` access point: check its **antenna** first (the small
   snap-on connector comes loose easily), then its USB power. This happened on the prototype; a
   better antenna cured it.
 - **Transmit shows RADIO NOT HEARD** after the router changed Wi-Fi channel: current companion
   firmware follows the channel by itself; older firmware needed a companion reboot. Fixing the
-  router on one channel (11 is what WMSDR listens on first) avoids the search altogether.
+  router on one channel (11 is what BEESDR listens on first) avoids the search altogether.
+
+### 7.5 Zeus / HPSDR mode
+
+In Zeus mode the BEESDR stops being a panadapter and becomes a **network radio**. It shows up on
+your Wi-Fi as an **OpenHPSDR radio** (Protocol 1, the protocol of the Hermes and Hermes-Lite 2
+boards) and streams the rig's I/Q to a program on a PC. The PC draws the spectrum and waterfall,
+demodulates and runs the station. The BEESDR carries the I/Q to it, plays its audio, keys the rig
+and keeps the rig on the program's frequency.
+
+**Tested programs (October 2026):** **Zeus**, **Thetis** and **piHPSDR**. All three find the
+BEESDR on the network and use it as a radio. Other OpenHPSDR Protocol-1 programs should work but
+have not been tried.
+
+#### Entering and leaving
+
+- MENU → **DSP** → **ZEUS → ON**. The BEESDR saves the choice and **reboots at once** into Zeus
+  mode.
+- The choice **survives a power cycle**: a station set up for Zeus comes back up in Zeus.
+- To return to the normal radio, **hold EXIT** (bottom right of the Zeus screen) for about
+  **1 second**. PTT is released, the choice is cleared and the BEESDR reboots.
+
+#### The Zeus screen
+
+Text only: no spectrum, no waterfall, no buttons. The only touch control is EXIT.
+
+| Line | Meaning |
+|---|---|
+| `IP … - waiting for client` / `STREAMING` | The BEESDR's address on your Wi-Fi, and whether a program is connected |
+| `EP6 …/s  err …` | I/Q packets per second sent to the PC (about **381/s** at 48 kHz), and send errors |
+| `EP2 …/s  gaps …/s` | Packets per second received from the PC (also about 381/s), and how many went missing. A missing packet is covered by a short fade, not a click |
+| `Zeus …  rig … Hz` + mode | The program's RX1 frequency, the frequency last sent to the rig, and the rig's mode |
+
+#### Settings in the program
+
+- **Sample rate 48 kHz.** Zeus starts at 192 kHz; the BEESDR streams 48 kHz only.
+- The BEESDR answers as a **Hermes** board, not a Hermes-Lite 2: an HL2 has no codec, so some
+  programs send it no audio. In Zeus, set **Settings → Radio → Audio output = "Radio
+  Speaker/headphone"**, otherwise no audio reaches the BEESDR.
+- The PC and the BEESDR must be on the same network. The program finds the BEESDR by itself
+  (discovery on UDP port 1024).
+
+> **Wi-Fi network.** In Zeus mode the BEESDR joins your home Wi-Fi as a client. The network name
+> and password are set **in the firmware build** (a file kept out of the source repository), not
+> from the menu.
+
+#### How each part works
+
+- **Receive.** The rig's I/Q goes to the PC unchanged, and the PC demodulates. The PC's audio
+  comes back over Wi-Fi and plays on the BEESDR's own output (speaker or headphones), so you
+  still listen at the radio. Expect about **¼ second** of delay between the band and your ear.
+- **Tuning.** The rig **follows the program**: tune in the program and the rig is retuned over
+  CAT (the frequency is sent again every second until the rig reports it). It does **not** work
+  the other way: the rig's own knob does not move the program, because Protocol 1 has no way to
+  tell the PC.
+- **Mode.** Protocol 1 does not carry the mode either. Set USB / LSB / CW **on the rig itself**
+  to match the program.
+- **TX ARM is automatic** in Zeus mode: armed while a program is streaming, disarmed as soon as
+  it stops or goes silent for 3 seconds.
+- **Voice.** The program's **MOX**, or the hand-mic PTT, keys the BEESDR's own voice transmit
+  chain: the microphone on the BEESDR, the MIC and TX tab settings, the rig keyed on P0_0. It is
+  exactly a normal voice over (§8.11). The PC's microphone is not used. MOX is ignored while the
+  rig is in CW, so it can never key a carrier.
+- **CW.** Comes from the **paddle** on the BEESDR (§8.11), not from the PC. With the rig in CW,
+  the paddle keys the rig. The program's own CW keyer and macros are not used.
+- **Not available in Zeus mode:** the BEESDR's own spectrum, decoders and knobs, and ESP-NOW,
+  so the companion web pages (§7.4) and the browser Transmit page do not work either.
 
 ---
 
@@ -949,7 +1015,7 @@ which is why they are persisted — and why the reset button matters here.
 
 ![DSP tab](images/menu-dsp.jpg)
 
-*Figure 8.4 — DSP tab. Photographed before the IQ BALANCE rows were added.*
+*Figure 8.4 — DSP tab. Photographed before the IQ BALANCE and ZEUS rows were added.*
 
 The spectrum smoothing chain, ahead of everything the other display tabs adjust — plus
 the CAT baud rate, which had to live somewhere reachable without a rebuild.
@@ -963,6 +1029,7 @@ the CAT baud rate, which had to live somewhere reachable without a rebuild.
 | **IQ BALANCE** | OFF / AUTO / MAN | Corrects the gain and phase mismatch between the I and Q channels, which otherwise leaks a mirror copy of every signal to the other side of centre. **AUTO** (default) measures it continuously from whatever is on the band and settles in a few seconds; it is frozen while you transmit. **MAN** applies the two rows below as set. **OFF** applies nothing. Corrects the spectrum and the audio alike. |
 | **IQ GAIN** | −3.00 … +3.00 dB, step 0.05 | The **board's** gain imbalance (Q against I), not the correction. Live in AUTO — the tab refreshes on its own. Stepping it while in AUTO switches to MAN, starting from the measured value. |
 | **IQ PHASE** | −10.0 … +10.0 deg, step 0.1 | The board's phase error away from 90°. Same behaviour as IQ GAIN. |
+| **ZEUS** | OFF / ON | **ON reboots at once into Zeus mode** (§7.5): the BEESDR becomes an OpenHPSDR radio for a PC program. Stays in Zeus mode across power cycles until EXIT is held on the Zeus screen. Always reads OFF in the normal radio. |
 
 **Reading the IQ rows.** A well-matched front end shows a few tenths of a dB and under a degree —
 about 40 dB of mirror rejection before any correction. To null a mirror by hand: put a steady
@@ -1018,7 +1085,7 @@ The receive audio chain — the part you actually listen to.
 
 Spectral noise reduction makes two decisions that are usually bundled together but are in
 fact independent: **how it estimates the noise**, and **how it treats the resulting per-bin
-gains**. WMSDR lets you hear each one separately, because the combination that works best
+gains**. BEESDR lets you hear each one separately, because the combination that works best
 is not the one either source algorithm arrived at on its own.
 
 | Choice | Noise estimate | Gain treatment | How it sounds |
@@ -1238,14 +1305,14 @@ Transmit settings. **Nothing transmits while TX ARM is OFF**, whatever asks for 
 | **DAH RATIO** | 2.5–4.5 | Dah length in dits (standard 3.0). |
 | **LETTER SPACE** | 3–6 units | Gap between letters (standard 3). |
 | **WORD SPACE** | 5–14 units | Gap between words (standard 7). |
-| **SIDETONE** | 0–10 | CW monitor level in the WMSDR audio; 0 = off. |
+| **SIDETONE** | 0–10 | CW monitor level in the BEESDR audio; 0 = off. |
 | **SIDETONE PITCH** | 300–1200 Hz | Sidetone pitch — its own setting, independent of TONE on the CW tab. |
 | **MIC BOOST** | OFF / +20 dB | The codec's microphone preamp boost. Takes effect at the next mic PTT press. |
 | **MIC GAIN** | 0–40 dB | Digital gain after the converter: the level going into the speech processor. Watch the **MIC** and **COMP** bars (§6.9). |
 | **TX LEVEL** | −70–0 dB | The level sent to the uSDX mic input. Set it with the 1 kHz tone (§9, *Sending voice*). |
 | **TX HICUT** | 2400–3000 Hz, step 100 | Top of the transmitted audio band — match the uSDX SSB filter. Shown as the right edge of the TX AUDIO mask. |
 | **TX TONE** | MIC / 1 kHz / 2-TONE | Test tones in place of the mic, for setting levels. 2-TONE is 700 + 1900 Hz at the same peak level as the single tone. Tones bypass the MIC tab processing. **Never saved — every boot transmits the mic.** |
-| **TX OUTPUT** | L+R / L ONLY | Which output channels carry the TX audio. L ONLY keeps the right channel silent while transmitting; the uSDX branch must then be on L (the tip). |
+| **TX OUTPUT** | L+R / L ONLY / R ONLY | Which output channels carry the TX audio. L ONLY keeps the right channel silent while transmitting, R ONLY the left; the uSDX branch must then be on the channel left live (L = the tip, R = the ring). |
 
 Everything except TX ARM and TX TONE is saved, in its own record (a menu RESET DEFAULTS does not
 touch it).
@@ -1269,12 +1336,21 @@ TX monitor (§6.9).
 a microsecond timer and keys PTT directly, so element lengths stay exact to at least 45 WPM. The
 uSDX, in CW mode, makes the carrier; no audio is involved.
 
+**CW paddle.** A paddle can be wired to the codec board: **DIT on P0_6, DAH on P0_7**, contacts
+to ground. Each line needs a **pull-up resistor to 3.3 V** on the board. Without them the inputs
+float, and after a few seconds the keyer starts sending on its own. The keyer is **iambic A** at
+CW WPM, with the same CW WEIGHT, DAH RATIO and spacing as typed text, and the same sidetone. It
+needs **TX ARM** and the **rig in CW** (the mode read over CAT); otherwise the paddle is ignored.
+Receive audio is muted from the first element until one word space (7 dits) after the last, then
+it comes back. It works in the normal radio and in Zeus mode (§7.5). If DIT and DAH come out
+swapped, swap the two wires.
+
 **Sidetone.** Heard only in **CW mode while the keyer sends**. It replays the real PTT edges,
 sample-accurate, with a small fixed delay, and **replaces receive audio** for the over; receive
-audio comes back when the over ends. The WMSDR audio output also feeds the uSDX mic input, but in CW
+audio comes back when the over ends. The BEESDR audio output also feeds the uSDX mic input, but in CW
 mode the uSDX ignores the mic.
 
-> **uSDX VOX must be OFF** once WMSDR's audio output is patched to the uSDX mic: that output carries
+> **uSDX VOX must be OFF** once BEESDR's audio output is patched to the uSDX mic: that output carries
 > receive audio between overs, and VOX would key the rig on it.
 
 ### 8.12 MIC tab
@@ -1336,7 +1412,7 @@ Read-only diagnostics, refreshed twice a second.
 
 | Row | What it tells you |
 |---|---|
-| **I/Q SENSE** | `STRAIGHT (I,Q)` (green) or `SWAPPED (Q,I)` (yellow), or `checking...` while detection runs. Either result is fine — WMSDR compensates. This is the fastest confirmation that the I/Q pair is actually arriving. |
+| **I/Q SENSE** | `STRAIGHT (I,Q)` (green) or `SWAPPED (Q,I)` (yellow), or `checking...` while detection runs. Either result is fine — BEESDR compensates. This is the fastest confirmation that the I/Q pair is actually arriving. |
 | **MODE / BAND** | What the rig says, via CAT |
 | **FREQUENCY** | The current LO, in kHz |
 | **SAMPLE RATE** | The current rate in Hz, and the resulting span |
@@ -1428,7 +1504,7 @@ persisted.
 1. Check the **E** icon is lit — FT8 needs the companion's UTC.
 2. Tune **14.074 MHz USB** (or another FT8 frequency, §7.3).
 3. **SSTV** button → MODE **FT8**. Decodes appear after the first full 15 s slot.
-4. To read at leisure: **HOLD** on the radio, or open `wmsdr-dx.local/ft8.html` and use
+4. To read at leisure: **HOLD** on the radio, or open `beesdr-dx.local/ft8.html` and use
    **Pause**, the filters and **Save log** (§7.4).
 
 ### Sending CW
@@ -1436,18 +1512,18 @@ persisted.
 1. uSDX on a dummy load or the antenna, **CW mode**, **VOX off**.
 2. MENU → **TX** → **TX ARM → ARMED**. Set CW WPM and SIDETONE. Close the menu — the TX lamp is
    outlined orange.
-3. Open `wmsdr-dx.local` → ☰ → **Transmit**. The badge shows **ARMED**.
+3. Open `beesdr-dx.local` → ☰ → **Transmit**. The badge shows **ARMED**.
 4. Type — each character goes out as you type it. Macros for CQ / RST / 73. **STOP** or **Esc**
    stops at once.
 5. Done: **TX ARM → OFF**.
 
 ### Sending voice (SSB)
 
-**Once, for the cable.** The WMSDR audio output goes to the uSDX mic input (L, the tip, if you
-want TX OUTPUT = L ONLY). The uSDX puts about **5 V of electret bias** on its mic tip: fit a
+**Once, for the cable.** The BEESDR audio output goes to the uSDX mic input (L, the tip, if you
+want TX OUTPUT = L ONLY; on R, the ring, for R ONLY). The uSDX puts about **5 V of electret bias** on its mic tip: fit a
 **DC-blocking capacitor** in the uSDX branch (4.7 µF, **+ towards the uSDX**). A resistive
 attenuator in the same branch is recommended (10 kΩ in series, 100 Ω to ground at the uSDX end,
-about −40 dB) — the WMSDR output is much hotter than a mic, and without it TX LEVEL has to sit near
+about −40 dB) — the BEESDR output is much hotter than a mic, and without it TX LEVEL has to sit near
 the bottom of its range.
 
 1. uSDX in **USB or LSB**, **VOX off**, into a dummy load; a second receiver or WebSDR listening.
@@ -1459,6 +1535,20 @@ the bottom of its range.
 5. MENU → **MIC** → **PRESET → RAGCHEW** or **DX**. Speak, and watch the TX monitor: speech inside
    the shaded band, **CLIP** mostly under 20 %, **OUT** touching red only on the loudest syllables.
 6. Done: **TX ARM → OFF**.
+
+### Using a PC program (Zeus / Thetis / piHPSDR)
+
+**Once.** Voice levels set as in *Sending voice* above, in the normal radio; Zeus mode uses the
+same settings. A firmware built with your Wi-Fi network (§7.5).
+
+1. MENU → **DSP** → **ZEUS → ON**. The BEESDR reboots into the Zeus screen and shows its IP
+   address, then `waiting for client`.
+2. On the PC, start the program and choose the radio it finds. Set **48 kHz**. In Zeus, also
+   **Settings → Radio → Audio output = "Radio Speaker/headphone"**.
+3. Start the program. The screen shows `STREAMING`, EP6 and EP2 both near 381/s; the rig moves
+   to the program's frequency. Set the rig's **mode by hand** to match.
+4. Voice: the program's **MOX**, or the hand-mic PTT. CW: rig in **CW**, then the **paddle**.
+5. Done: hold **EXIT** for 1 second. The BEESDR reboots into the normal radio.
 
 ---
 
@@ -1474,7 +1564,7 @@ arrangement.
 
 ### Annex B — Proposed enclosure
 
-![Enclosure front panel](images/wmsdr-front-atu_02.jpg)
+![Enclosure front panel](images/beesdr-front-atu_02.jpg)
 
 *Figure B.1 — Enclosure front panel: touch panel, eight-encoder unit with LED indicators, tuning knob, ATU display (separate unit), round multi-pin connector bottom left. See also Figures 1 and 2.*
 
@@ -1489,8 +1579,8 @@ reference card for the two button rows.
 
 ### Annex D — Signal processing block diagrams
 
-WMSDR never touches RF. Your rig does the RF work and brings the band down to an I/Q
-baseband. WMSDR digitises that I/Q in the WM8731 codec, and everything after that is
+BEESDR never touches RF. Your rig does the RF work and brings the band down to an I/Q
+baseband. BEESDR digitises that I/Q in the WM8731 codec, and everything after that is
 software running on core 0 of the ESP32-S3, one block of 1024 samples at a time (21.3 ms
 at 48 kHz). The two figures below show that software stage by stage, in the order the
 firmware runs it.
@@ -1525,4 +1615,4 @@ silence before the rig is unkeyed.*
 
 ---
 
-*WMSDR — YO4WM. Presented at Cavaillon, October 2026.*
+*BEESDR — YO4WM. Presented at Cavaillon, October 2026.*

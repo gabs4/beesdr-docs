@@ -23,7 +23,7 @@ text{font-family:"Segoe UI",Helvetica,Arial,sans-serif;fill:#222}
 .ctl{fill:none;stroke:#666;stroke-width:1.6;stroke-dasharray:6 4;marker-end:url(#ahc)}
 </style>
 <rect width="820" height="905" fill="#fff"/>
-<text class="title" x="28" y="34">WMSDR — chaîne d'émission phonie</text>
+<text class="title" x="28" y="34">BEESDR — chaîne d'émission phonie</text>
 <text class="sub" x="28" y="54">Cœur 0, processing_task : tant que le PTT du micro est pressé, cette chaîne remplace la réception</text>
 <text class="extl" x="28" y="90">DE VOUS</text>
 <text class="band" x="804" y="90" style="text-anchor:end">CHEMIN AUDIO  (chaque bloc)</text>
@@ -86,7 +86,7 @@ text{font-family:"Segoe UI",Helvetica,Arial,sans-serif;fill:#222}
 <rect x="660" y="320" width="134" height="62" rx="7" fill="#e4eefa" stroke="#2f5d8f" stroke-width="1.4"/>
 <text class="t1" x="727.0" y="340.5">WM8731 DAC</text>
 <text class="t2" x="727.0" y="355.5">sortie casque</text>
-<text class="t3" x="727.0" y="370.5">TX OUTPUT  L+R / L ONLY</text>
+<text class="t3" x="727.0" y="370.5">TX OUT  L+R / L / R</text>
 <rect x="186" y="426" width="134" height="56" rx="7" fill="#e5f3e8" stroke="#2e7d4f" stroke-width="1.4"/>
 <text class="t1" x="253.0" y="443.5">Tonalité de test</text>
 <text class="t2" x="253.0" y="458.5">1 kHz ou 700 + 1900 Hz</text>

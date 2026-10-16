@@ -23,7 +23,7 @@ text{font-family:"Segoe UI",Helvetica,Arial,sans-serif;fill:#222}
 .iqd{fill:none;stroke:#6a4c93;stroke-width:3.2;marker-end:url(#ah)}
 </style>
 <rect width="820" height="990" fill="#fff"/>
-<text class="title" x="28" y="34">WMSDR — chaîne de réception</text>
+<text class="title" x="28" y="34">BEESDR — chaîne de réception</text>
 <text class="sub" x="28" y="54">Cœur 0, processing_task : chaque bloc de 1024 échantillons (21,3 ms à 48 kHz) traverse les deux chemins</text>
 <rect x="170" y="70" width="638" height="140" rx="10" fill="#faf8fd" stroke="#d9cfe8" stroke-dasharray="5 4"/>
 <text class="band" x="186" y="88">CHEMIN AFFICHAGE  (≈31 images/s)</text>
@@ -204,6 +204,6 @@ text{font-family:"Segoe UI",Helvetica,Arial,sans-serif;fill:#222}
 <circle cx="309" cy="891" r="9" fill="#fff" stroke="#c46a00" stroke-width="1.6"/>
 <text class="tapn" x="309" y="895">5</text>
 <text class="lg" x="324" y="895">Mesure du bruit FM — commande le squelch (SQL)</text>
-<text class="note" x="28" y="956" style="font-weight:700;fill:#c46a00">WMSDR ne touche jamais à la HF : il traite la bande de base I/Q que votre transceiver produit déjà.</text>
+<text class="note" x="28" y="956" style="font-weight:700;fill:#c46a00">BEESDR ne touche jamais à la HF : il traite la bande de base I/Q que votre transceiver produit déjà.</text>
 <text class="note" x="28" y="976">D = 1 · 4 · 4 · 8 pour 8 · 32 · 48 · 96 kHz. En émission phonie, les deux chemins sont suspendus au profit de la chaîne TX.</text>
 </svg>

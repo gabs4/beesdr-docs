@@ -1,12 +1,12 @@
-# WMSDR (dependent panadapter)
+# BEESDR (dependent panadapter)
 
-![WMSDR front panel](images/wmsdr-front-rss.jpg)
+![BEESDR front panel](images/beesdr-front-rss.jpg)
 
 **🇫🇷 Un panadapter, récepteur DSP et tête de commande pour petits transceivers QRP.**
-Le WMSDR améliore le poste que vous possédez déjà — il ne le remplace pas.
+Le BEESDR améliore le poste que vous possédez déjà — il ne le remplace pas.
 
 **🇬🇧 A panadapter, DSP receiver and control head for small QRP transceivers.**
-WMSDR enhances the rig you already own — it does not replace it.
+BEESDR enhances the rig you already own — it does not replace it.
 
 ---
 
@@ -14,8 +14,8 @@ WMSDR enhances the rig you already own — it does not replace it.
 
 | | Lire en ligne · Read online | PDF |
 |---|---|---|
-| 🇫🇷 Français | [Manuel d'utilisation](WMSDR-Manuel-Utilisateur-FR.md) | [WMSDR-Manuel-Utilisateur-FR.pdf](pdf/WMSDR-Manuel-Utilisateur-FR.pdf) |
-| 🇬🇧 English | [User Manual](WMSDR-User-Manual-EN.md) | [WMSDR-User-Manual-EN.pdf](pdf/WMSDR-User-Manual-EN.pdf) |
+| 🇫🇷 Français | [Manuel d'utilisation](BEESDR-Manuel-Utilisateur-FR.md) | [BEESDR-Manuel-Utilisateur-FR.pdf](pdf/BEESDR-Manuel-Utilisateur-FR.pdf) |
+| 🇬🇧 English | [User Manual](BEESDR-User-Manual-EN.md) | [BEESDR-User-Manual-EN.pdf](pdf/BEESDR-User-Manual-EN.pdf) |
 
 ---
 
@@ -27,6 +27,8 @@ WMSDR enhances the rig you already own — it does not replace it.
 | DSP : réduction de bruit, notch, noise blanker, AGC, égaliseur | DSP: noise reduction, notch, noise blanker, AGC, equaliser |
 | Décodeurs : CW, RTTY, PSK31/63, FT8, SSTV, WeFax | Decoders: CW, RTTY, PSK31/63, FT8, SSTV, WeFax |
 | Pages web compagnon : images, FT8, émission CW depuis le navigateur | Companion web pages: pictures, FT8, CW transmit from the browser |
+| Émission phonie avec processeur de modulation, manipulateur iambique à palettes | Voice transmit with speech processor, iambic paddle keyer |
+| Mode Zeus : radio OpenHPSDR en Wi-Fi pour Zeus, Thetis, piHPSDR | Zeus mode: OpenHPSDR radio over Wi-Fi for Zeus, Thetis, piHPSDR |
 | S-mètre calibré, contrôle CAT, huit boutons configurables | Calibrated S-meter, CAT control, eight assignable knobs |
 | Poste de référence : uSDX triband (WB2CBA) | Reference rig: uSDX triband (WB2CBA) |
 | L'image ci-dessus illustre un cas d'utilisation possible | The image above depicts a possible use case |
