@@ -703,6 +703,15 @@ UTC     SNR   DT   Hz  message
   indicatifs complets entendus, si bien que ces champs se complètent (par ex. `<YL3KZ>`) dès que la
   station est apparue en entier.
 
+**Décodage en arrière-plan.** Tant que la page FT8 (`beesdr-dx.local/ft8.html`, §7.4) est ouverte
+dans un navigateur, le poste décode le FT8 même fenêtre de décodage fermée — l'écran reste libre
+pour le spectre. Il s'arrête dans les 5 secondes qui suivent la fermeture du dernier onglet. La
+plage doit toujours donner un audio à 12 kHz : réglez-la vous-même sur **48k ou 96k** avec le bouton
+**I/Q** (la fenêtre le ferait, une fenêtre fermée ne le peut pas).
+
+**Émettre en FT8** se fait depuis la page FT8 (§7.4, *Trafiquer en FT8* au §9). La fenêtre n'a pas
+besoin d'être ouverte pour cela.
+
 | Bouton | En FT8 |
 |---|---|
 | START, SLANT−/+ | inutilisés (vides) — le FT8 suit ses propres créneaux UTC |
@@ -755,11 +764,12 @@ résultat.
 
 #### Limites
 
-- Rien n'est enregistré sur le poste — les cartes WeFax et les décodages FT8 peuvent être
-  enregistrés depuis un navigateur (§7.4) ; les images SSTV et les textes RTTY / PSK, pas encore.
+- Rien n'est enregistré sur le poste — les cartes WeFax peuvent être enregistrées depuis un
+  navigateur et les QSO FT8 sont journalisés sur le compagnon (§7.4) ; les images SSTV et les
+  textes RTTY / PSK, pas encore.
 - SSTV : Martin 1 et Martin 2 uniquement. WeFax : 120 lignes/min, IOC 576 uniquement. RTTY :
   Baudot (ITA2) uniquement — pas de SITOR / NAVTEX. PSK : BPSK31 et BPSK63 uniquement — pas de
-  QPSK. FT8 : réception seulement — pas de FT4, pas d'émission.
+  QPSK. FT8 : pas de FT4.
 - Le mode TEST est provisoire et sera retiré une fois le SSTV vérifié sur des signaux réels.
 
 ---
@@ -781,7 +791,9 @@ Ouvrez **`http://beesdr-dx.local/`** :
   Pictures, **Transmit**, Control panel, RSS feeds, Settings, Status (JSON).
 - **☀ / ☾** (en haut à droite) bascule entre un thème sombre et un thème clair ; le choix est
   mémorisé dans ce navigateur.
-- **Settings** regroupe les champs Wi-Fi, **CALLSIGN** et cluster DX. L'enregistrement redémarre
+- **Settings** regroupe les champs Wi-Fi, **CALLSIGN**, **LOCATOR** et cluster DX. L'indicatif et
+  le locator construisent les messages FT8 que vous émettez (les quatre premiers caractères du
+  locator partent à l'antenne, par ex. `KN35`). L'enregistrement redémarre
   le compagnon ; laisser le mot de passe vide conserve celui enregistré. En première
   configuration (point d'accès `BEESDR-DX-Config`, 192.168.4.1), le formulaire s'ouvre directement.
 
@@ -789,6 +801,7 @@ Les pages en direct affichent **LIVE** une fois connectées et se reconnectent d
 
 **Conditions :** le poste et le compagnon à jour, le compagnon sur votre Wi-Fi, et la fenêtre de
 décodage ouverte dans le mode concerné — le compagnon ne reçoit que pendant que le poste décode.
+Le FT8 fait exception : une page FT8 ouverte fait décoder le poste de lui-même (§7.3).
 
 #### Images — `/fax.html`
 
@@ -806,19 +819,81 @@ décodage ouverte dans le mode concerné — le compagnon ne reçoit que pendant
 
 #### FT8 — `/ft8.html`
 
+La page est disposée comme WSJT-X, en deux volets côte à côte (l'un au-dessus de l'autre sur un
+téléphone) :
+
+- **Band Activity** (à gauche) — tout ce qui est décodé sur la bande.
+- **Rx Frequency** (à droite) — votre propre QSO, passage par passage : les décodages à **±50 Hz de
+  TX Hz** (la plage est indiquée dans le titre), tout message contenant votre indicatif, les
+  messages de la station contactée, et **vos propres passages** — sur fond **jaune**, avec **TX**
+  dans la colonne SNR. Triés par créneau, pour que son message et votre réponse se lisent dans
+  l'ordre.
+
 | Élément | Rôle |
 |---|---|
-| tableau | créneau le plus récent en haut : UTC, SNR, DT, Hz, message |
+| tableaux | créneau le plus récent en haut : UTC, SNR, DT, Hz, message. Clic et double-clic fonctionnent de même dans les deux volets |
 | message vert | un **CQ** |
 | ligne orange | un message contenant **votre indicatif** — le **CALLSIGN** réglé sur la page de configuration du compagnon |
-| **CQ only** / **my call only** | filtres |
-| champ de recherche | n'affiche que les messages contenant un indicatif ou un locator, par ex. `JN` |
+| **CQ only** / **my call only** | filtres de Band Activity |
+| champ de recherche | Band Activity n'affiche que les messages contenant un indicatif ou un locator, par ex. `JN` |
 | **Pause** | fige le tableau pour le lire ; les décodages continuent d'arriver, le bouton les compte, un nouveau clic revient aux plus récents |
 | `last slot …: N decoded, M received` | le compte du poste face à ce qui a atteint la page ; **rouge** quand ils diffèrent — des décodages ont été perdus sur la liaison |
-| **Save log** | télécharge tous les décodages conservés dans un fichier texte au format `ALL.TXT` de WSJT-X |
+| ligne grisée | l'expéditeur est **déjà contacté** (voir *Journal* plus bas) ; l'infobulle donne les bandes |
 
-Le compagnon garde les **1000 derniers décodages** jusqu'à son redémarrage ; recharger la page les
-fait tous revenir.
+Le compagnon garde les **1000 dernières lignes** (décodages et vos passages) jusqu'à son
+redémarrage ; recharger la page les fait toutes revenir. Quand Fast reply remplace le passage déjà
+à l'antenne, ce créneau garde une seule ligne jaune — le message réellement parti.
+
+##### Émettre en FT8
+
+La page est le poste de trafic FT8 ; le poste en est le moteur. Il construit chaque message à
+partir du CALLSIGN et du LOCATOR du compagnon, émet dans les bons créneaux et fait avancer le QSO
+de lui-même. **TX ARM** doit être activé sur le poste (§8.11). La puissance vient de
+**FT8 LEVEL** dans l'onglet TX.
+
+| Élément | Rôle |
+|---|---|
+| badge **TX:** | ce que rapporte le poste : **NOT ARMED**, **IDLE**, **QUEUED** (en attente de son créneau), **ON AIR**, ou **RADIO NOT HEARD** |
+| message + infos | le message à l'antenne ou en attente, son créneau (UTC, pair/impair), la fréquence audio et les passages restants |
+| **HALT** | arrête tout : le passage en cours est coupé aussitôt, un passage en attente est abandonné, le moteur de QSO lâche prise. Plus rien ne part tant que vous n'envoyez rien de nouveau |
+| **TX Hz** | votre fréquence audio dans la bande passante, 200–2900 Hz (1500 par défaut). Choisissez une place libre sur la chute d'eau |
+| **Even :00/:30** / **Odd :15/:45** | les créneaux où vous émettez. Cliquer un décodage règle automatiquement l'autre moitié de la minute |
+| **Auto Seq** | le poste mène le QSO : il décode la réponse et envoie l'étape suivante de lui-même |
+| **Call 1st** | pendant un CQ, la première station qui répond est contactée automatiquement. Désactivé : personne n'obtient de réponse d'office ; double-cliquez l'appelant pour lui répondre |
+| **Fast reply** | répond dès le créneau suivant, comme WSJT-X. Désactivé : la réponse part un cycle (30 s) plus tard. Laissez-le activé sauf raison particulière |
+| **CQ** | lance `CQ <indicatif> <locator>` à chaque période du créneau choisi jusqu'à une réponse, HALT, ou le chien de garde |
+| ligne **QSO:** | l'état du moteur : correspondant, `waiting for their report` (avec les essais manqués, sur 4), reports envoyé/reçu, l'étape Tx à l'antenne ; en vert `QSO complete`, en rouge `no answer - gave up` |
+| rangée **Tx1 … Tx5** | les cinq messages standard pour la station cliquée ; un clic envoie ce message (forçage manuel — il arrête le moteur). L'étape à l'antenne est mise en évidence |
+| **Clear** (orange) | vide la rangée Tx1–Tx5 et retire la marque de la ligne cliquée. N'arrête pas l'émission — c'est le rôle de HALT |
+
+**Clic et double-clic.** Un **simple clic** sur un décodage prépare seulement la rangée Tx1–Tx5.
+Un **double-clic** appelle la station : Tx1 dans l'autre moitié de la minute, ou — si elle vous
+appelle déjà — l'étape suivante de son échange. Un simple clic n'envoie jamais rien.
+
+**Déroulement d'un QSO** (Auto Seq activé). Chaque message est répété à chaque période jusqu'au
+décodage de la réponse attendue. Après **4 périodes sans elle**, le poste abandonne (un QSO que vous
+avez lancé) ou revient au CQ (une station qui avait répondu à votre CQ). Quand le **RR73** ou le
+**73** final part, le QSO est **journalisé** et l'émission s'arrête — le QSO suivant, c'est vous
+qui le lancez. Un message cesse aussi d'être répété après **12 passages (6 minutes)** sans rien de
+nouveau, comme le chien de garde Tx de WSJT-X.
+
+> **Vérifié en l'air (4 novembre 2026, 40 m) :** premier QSO complet, UT4PA (KO20) a répondu à
+> notre CQ ; avec Fast reply, notre report et notre RR73 sont chacun partis dès le créneau
+> suivant. Journalisé sur le compagnon.
+
+##### Journal et déjà contactés
+
+| Élément | Rôle |
+|---|---|
+| **Log: N QSOs** | les QSO FT8 complets, conservés dans la mémoire flash du compagnon — ils survivent aux redémarrages |
+| **Download .adi** | le journal en fichier ADIF 3 nommé d'après votre indicatif, pour votre logiciel de log |
+| **Clear log** | efface le journal après confirmation. Téléchargez-le d'abord : c'est irréversible |
+| **Worked before: N calls** | les indicatifs déjà contactés, d'après votre propre journal plus tout fichier importé |
+| **Import .adi** | lit un fichier ADIF — par ex. `wsjtx_log.adi` de WSJT-X — et marque ces indicatifs avec leurs bandes |
+| **Clear worked** | oublie les indicatifs importés ; ceux du journal du compagnon restent marqués |
+
+Les stations déjà contactées sont **grisées** dans la liste des décodages, pour que les nouvelles
+ressortent.
 
 #### Émission (CW) — `/tx.html`
 
@@ -933,9 +1008,16 @@ Texte seulement : ni spectre, ni cascade, ni boutons. La seule commande tactile 
   lui-même**, comme dans le programme.
 - **TX ARM est automatique** en mode Zeus : armé tant qu'un programme transmet, désarmé dès qu'il
   s'arrête ou se tait pendant 3 secondes.
-- **Phonie.** Le **MOX** du programme, ou le PTT du micro, commute la chaîne d'émission phonie du
-  BEESDR lui-même : le micro du BEESDR, les réglages des onglets MIC et TX, le poste commuté sur
-  P0_0. C'est exactement une transmission phonie normale (§8.11). Le micro du PC n'est pas utilisé.
+- **Phonie et modes numériques.** Le **MOX** du programme, ou le PTT du micro, commute le poste
+  sur P0_0. Ce qui est émis dépend de **ZEUS TX** dans l'onglet DSP (§8.4), réglé dans la radio
+  normale avant d'entrer en mode Zeus :
+  - **MIC** — le micro du BEESDR, à travers les réglages des onglets MIC et TX : exactement une
+    transmission phonie normale (§8.11).
+  - **PC** — l'audio d'émission du programme lui-même : son FT8 (ou un autre mode numérique), ou le
+    micro du PC. Il part propre — sans traitement micro — au niveau **FT8 LEVEL** (§8.11). Le curseur
+    **Drive** du programme l'abaisse en dessous : 80 % a donné 3,6 W et 50 % 3,0 W sur le uSDX au même
+    FT8 LEVEL. Poste en **USB** pour le FT8.
+
   Le MOX est ignoré quand le poste est en CW, il ne peut donc jamais émettre une porteuse.
 - **CW.** Vient du **manipulateur à palettes** du BEESDR (§8.11), pas du PC. Poste en CW, les
   palettes commutent le poste. Le manipulateur et les macros CW du programme ne sont pas utilisés.
@@ -966,7 +1048,7 @@ KNOBS · TX · MIC · STATUS
 **Comment les réglages sont enregistrés**
 
 Tout sauf l'onglet STATUS est écrit en flash sous forme d'**un seul enregistrement
-versionné** (les onglets TX et MIC ont leur propre enregistrement, et TX ARM et TX TONE ne sont jamais enregistrés), validé à la **fermeture** du menu — six modifications font une écriture, et
+versionné** (les onglets TX et MIC ont leur propre enregistrement, et TX ARM, TX TONE et FT8 TEST ne sont jamais enregistrés), validé à la **fermeture** du menu — six modifications font une écriture, et
 aucune modification ne fait aucune écriture. Les réglages changés hors du menu (boutons
 `WFG`, `SG`, `SAR`, `FILL`, `VOL`, appui sur SQL) sont rattrapés par une sauvegarde
 différée déclenchée 3 secondes après le dernier changement.
@@ -1069,7 +1151,7 @@ réinitialisation compte ici.
 
 ![Onglet DSP](images/menu-dsp.jpg)
 
-*Figure 8.4 — Onglet DSP. Photographiée avant l'ajout des lignes IQ BALANCE et ZEUS.*
+*Figure 8.4 — Onglet DSP. Photographiée avant l'ajout des lignes IQ BALANCE, ZEUS et ZEUS TX.*
 
 La chaîne de lissage du spectre, en amont de tout ce que règlent les autres onglets
 d'affichage — plus la vitesse CAT, qui devait se trouver quelque part d'accessible sans
@@ -1085,6 +1167,7 @@ recompilation.
 | **IQ GAIN** | −3,00 … +3,00 dB, pas 0,05 | Le déséquilibre de gain **de la carte** (Q par rapport à I), et non la correction. Mis à jour en direct en AUTO — l'onglet se rafraîchit seul. Le modifier en AUTO bascule en MAN, à partir de la valeur mesurée. |
 | **IQ PHASE** | −10,0 … +10,0 deg, pas 0,1 | L'erreur de phase de la carte par rapport à 90°. Même comportement que IQ GAIN. |
 | **ZEUS** | OFF / ON | **ON redémarre immédiatement en mode Zeus** (§7.5) : le BEESDR devient une radio OpenHPSDR pour un programme sur PC. Reste en mode Zeus d'un allumage à l'autre jusqu'à un appui long sur EXIT dans l'écran Zeus. Affiche toujours OFF dans la radio normale. |
+| **ZEUS TX** | MIC / PC | Ce qu'émet une transmission en mode Zeus : **MIC** = le micro et la chaîne phonie du BEESDR ; **PC** = l'audio d'émission du programme lui-même (son FT8, ou le micro du PC), propre, au niveau FT8 LEVEL. Enregistré aussitôt. Réglez-le ici avant de passer ZEUS à ON. |
 
 **Lire les lignes IQ.** Une tête de réception bien appairée affiche quelques dixièmes de dB et
 moins d'un degré — environ 40 dB de réjection du miroir avant toute correction. Pour annuler un
@@ -1382,9 +1465,23 @@ Réglages d'émission. **Rien n'émet tant que TX ARM est sur OFF**, quelle que 
 | **TX HICUT** | 2400–3000 Hz, pas de 100 | Haut de la bande audio émise — à accorder sur le filtre BLU du uSDX. Affiché comme bord droit du masque TX AUDIO. |
 | **TX TONE** | MIC / 1 kHz / 2-TONE | Tonalités de test à la place du micro, pour régler les niveaux. 2-TONE = 700 + 1900 Hz, au même niveau crête que la tonalité simple. Les tonalités ne passent pas par le traitement de l'onglet MIC. **Jamais enregistré — chaque démarrage émet le micro.** |
 | **TX OUTPUT** | L+R / L ONLY / R ONLY | Canaux de sortie qui portent l'audio d'émission. L ONLY laisse le canal droit muet en émission, R ONLY le gauche ; la branche uSDX doit alors être sur le canal resté actif (L = la pointe, R = la bague). |
+| **FT8 LEVEL** | −70–0 dB (−15 par défaut) | Le niveau des émissions FT8 — depuis la page FT8 (§7.4), et en mode Zeus avec ZEUS TX = PC (§7.5). Réglage propre, indépendant de TX LEVEL. Voir le tableau de puissance ci-dessous. |
+| **FT8 TEST** | OFF / SEND | **SEND** émet un `CQ <votre indicatif> <locator>` — CALLSIGN et LOCATOR des Settings du compagnon (§7.4) ; refusé tant que les deux ne sont pas réglés — dans le prochain créneau pair à 1500 Hz, pour vérifier niveau et synchronisation sur charge fictive ou un second récepteur ; revient seul à OFF à la fin du passage. OFF en attente ou à l'antenne = arrêt. **Jamais enregistré.** |
 
-Tout sauf TX ARM et TX TONE est enregistré, dans un enregistrement à part (le RESET DEFAULTS du
-menu n'y touche pas).
+Tout sauf TX ARM, TX TONE et FT8 TEST est enregistré, dans un enregistrement à part (le RESET
+DEFAULTS du menu n'y touche pas).
+
+**Émission FT8.** Un passage FT8 est un passage en tonalité : le BEESDR génère lui-même le signal
+FT8 à 8 tons (GFSK lissé, comme WSJT-X) à la place du micro, coupe la réception, commute P0_0
+environ 0,1 s après le début du créneau et relâche vers 13 s, si bien que le créneau de réception
+suivant reste intact. Le poste doit être en **USB**. Mesuré sur le uSDX sous 12,1 V :
+
+| FT8 LEVEL | −20 dB | −18 dB | −16 dB | −14 dB | −12 dB et plus |
+|---|---|---|---|---|---|
+| Puissance | 1,6 W | 1,8 W | 2,7 W | 3,5 W | 4,1 W (saturé) |
+
+Restez au point où la puissance cesse de monter, ou en dessous : au-delà, le uSDX ne fait que
+distordre.
 
 **PTT.** La ligne est la broche P0_0 de l'extenseur AW9523 sur la carte codec, reliée au PTT du
 uSDX : **HAUTE au repos, BASSE en émission**. Ne branchez rien d'autre sur cette ligne — la broche
@@ -1584,7 +1681,31 @@ ces valeurs sont mémorisées.
 3. Bouton **SSTV** → MODE **FT8**. Les décodages apparaissent après le premier créneau complet de
    15 s.
 4. Pour lire tranquillement : **HOLD** sur le poste, ou ouvrez `beesdr-dx.local/ft8.html` et
-   utilisez **Pause**, les filtres et **Save log** (§7.4).
+   utilisez **Pause** et les filtres (§7.4). Page ouverte, la fenêtre peut être fermée — le poste
+   continue de décoder (plage 48k ou 96k).
+
+### Trafiquer en FT8
+
+**Une fois.** Dans les **Settings** du compagnon : CALLSIGN et LOCATOR. Sur le poste, onglet TX :
+**FT8 LEVEL** d'après le tableau de puissance (§8.11) — −15 dB donne environ 4 W sur le uSDX.
+Facultatif : **Import .adi** de votre journal existant sur la page FT8, pour que les stations déjà
+contactées apparaissent grisées.
+
+1. Poste en **USB** sur une fréquence FT8, par ex. **7,074** ou **14,074 MHz** ; plage **48k ou 96k**.
+2. Ouvrez `beesdr-dx.local/ft8.html`. Cochez **Auto Seq**, **Call 1st** et **Fast reply**.
+3. Réglez **TX Hz** sur une place libre de la chute d'eau (par ex. 1500).
+4. Poste : onglet TX → **TX ARM**. Le badge de la page passe de **NOT ARMED** à **IDLE**.
+5. Au choix :
+   - **Lancer appel (CQ) :** choisissez **Even** ou **Odd**, appuyez sur **CQ**. Le badge affiche
+     **QUEUED**, puis **ON AIR** un créneau sur deux. Quand une station répond, la ligne QSO la suit
+     au fil des reports.
+   - **Répondre à un CQ :** **double-cliquez** la ligne CQ verte (de préférence une station forte,
+     SNR au-dessus de −10). Le poste envoie Tx1 dans l'autre moitié de la minute et continue seul.
+6. Suivez l'échange dans le volet **Rx Frequency** : ses messages et vos passages en jaune, dans
+   l'ordre. La ligne QSO se termine par **QSO complete** en vert ; le compteur du journal augmente de un et
+   l'émission s'arrête.
+7. Pour arrêter à tout moment : **HALT**. **Clear** vide les anciens textes Tx1–Tx5.
+8. Après la session : **Download .adi** pour votre logiciel de log. Désactivez TX ARM.
 
 ### Émettre en CW
 
@@ -1632,7 +1753,10 @@ normale ; le mode Zeus utilise les mêmes réglages. Un firmware compilé avec v
 3. Démarrez le programme. L'écran affiche `STREAMING`, EP6 et EP2 proches de 381/s ; le poste se
    cale sur la fréquence du programme. Réglez le **mode du poste à la main** pour qu'il corresponde.
 4. Phonie : le **MOX** du programme, ou le PTT du micro. CW : poste en **CW**, puis les **palettes**.
-5. Terminé : maintenez **EXIT** 1 seconde. Le BEESDR redémarre dans la radio normale.
+5. FT8 depuis le programme : avant l'étape 1, réglez DSP → **ZEUS TX → PC**. Poste en **USB**,
+   horloge du PC synchronisée (le FT8 l'exige à la seconde près), puis lancez le FT8 du programme.
+   Puissance : **FT8 LEVEL** dans l'onglet TX, ajustée par le curseur **Drive** du programme.
+6. Terminé : maintenez **EXIT** 1 seconde. Le BEESDR redémarre dans la radio normale.
 
 ---
 
